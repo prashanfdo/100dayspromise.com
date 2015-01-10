@@ -1,0 +1,61 @@
+<div class="container">
+    <div class="row col-md-12">
+        <h1 class="brand">100 Days Promise
+		<span class="pull-right">
+		</span>
+        </h1>
+    </div>
+    <div class="row col-md-12">
+        <h4 class="stats-band clearfix text-center">
+            <div class="col-md-4"><span class="key thin">Completed</span>{{stats.completed}}/{{stats.total}}</div> 
+            <div class="col-md-4"><span class="key thin">Late</span>{{stats.late + ''}} Promises</div>
+            <div class="col-md-4"><span class="key thin">Time Left</span>{{stats.remainingTime}}</div>
+        </h4>
+    </div>
+    <div class="row col-md-12 timeline">
+        <div class="day" ng-repeat="day in days" ng-class="{'day-passed':day.dayPassed,'late':day.dayPassed && !day.event.done,'has-event':day.event,'done':day.event.done}">
+            <div class="day-inner text-center">
+                <a class="btn btn-link pull-right day-no"><span class="day-text">Day</span> #{{$index + 1}}</a>
+                <span class="early-completed glyphicon" ng-class="{'glyphicon-star':day.event.earlyCompleted,'glyphicon-ok':day.event.done && !day.event.earlyCompleted}"></span>
+            </div>
+            <div class="peek" ng-show="day.event">
+                <pre class="pull-left date-str">{{getDateName(day.date)}}</pre>
+                <span class="clearfix"></span>
+                <div>
+                    <p ng-bind-html="day.event.promiseText"></p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-7 share-buttons">
+            <a href="https://twitter.com/share" class="twitter-share-button" data-url="100dayspromise.com">Tweet</a>
+            <script>
+            ! function(d, s, id) {
+                var js, fjs = d.getElementsByTagName(s)[0],
+                    p = /^http:/.test(d.location) ? 'http' : 'https';
+                if (!d.getElementById(id)) {
+                    js = d.createElement(s);
+                    js.id = id;
+                    js.src = p + '://platform.twitter.com/widgets.js';
+                    fjs.parentNode.insertBefore(js, fjs);
+                }
+            }(document, 'script', 'twitter-wjs');
+            </script>
+            <iframe src="//www.facebook.com/plugins/like.php?href=http://100dayspromise.com/&send=false&layout=button_count&width=110&show_faces=true&font&colorscheme=light&action=like&height=20" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:110px; height:20px;" allowTransparency="true"></iframe>
+            <div class="g-plusone" data-size="medium"   data-href="http://100dayspromise.com/"></div><script type="text/javascript">(function() {var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;po.src = 'https://apis.google.com/js/plusone.js';var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);})();</script>
+            <iframe src="http://ghbtns.com/github-btn.html?user=prashanfdo&repo=api-router&type=watch&count=true" height="30" width="30" frameborder="0" scrolling="0" style="width:90px; height: 20px;" allowTransparency="true"></iframe>
+            <iframe src="http://ghbtns.com/github-btn.html?user=prashanfdo&repo=api-router&type=fork&count=true" height="30" width="118" frameborder="0" scrolling="0" style="width:90px; height: 20px;" allowTransparency="true"></iframe>
+        </div>
+    </div>
+    <div class="row col-md-12">
+        <h4 class="legend-band clearfix text-center">
+            <div class="legend">
+	            <span class="key completed">Completed</span>
+	            <span class="key late">Late</span>
+	            <span class="key promise">Promise</span>
+	            <span class="key"><span class="glyphicon glyphicon-ok"></span>&nbsp;&nbsp;Completed</span>
+	            <span class="key"><span class="glyphicon glyphicon-star"></span>&nbsp;&nbsp;Completed Early</span>
+	            <a href="about" class="key about-link">About</a>
+            </div> 
+        </h4>
+    </div>
+</div>

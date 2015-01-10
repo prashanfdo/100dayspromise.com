@@ -1,0 +1,88 @@
+@import 'bootstrap/less/bootstrap.less';
+@import 'font-awesome/less/font-awesome.less';
+@icon-font-path: '/bower_components/bootstrap/fonts/';
+@fa-font-path: '/bower_components/font-awesome/fonts';
+/**
+ * App-wide Styles
+ */
+
+@import url("//fonts.googleapis.com/css?family=Lato:300,400,700|Playball:300,400,700");
+.browsehappy {
+    margin: 0.2em 0;
+    background: #ccc;
+    color: #000;
+    padding: 0.2em 0;
+}
+body {
+    h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
+        font-weight: 200;
+    }
+    font-weight: 200;
+    font-family: 'Lato', sans-serif;
+    background: linear-gradient(-45deg, rgba(0, 0, 0, 0) 50%, rgba(255, 255, 255, 0.02) 50%, rgba(255, 255, 255, 0.01)), linear-gradient(to right, rgba(0, 0, 0, 0) 90%, rgba(255, 255, 255, 0.03) 90%), #3D3527;
+    .brand {
+        text-shadow: 0px 0px 10px rgba(0, 0, 0, 1);
+        font-family: 'Playball', sans-serif;
+        background: #DB5600;
+        color: white;
+        text-align: center;
+        padding: 0.5em 1em;
+        margin: 8px 0 0;
+    }
+    .stats-band {
+        padding: .5em 2em;
+        color: white;
+        background: rgba(255, 255, 255, 0.1);
+        margin: 1px 0 0;
+        .key {
+            opacity: .8;
+            font-size: .8em;
+            padding-right: .5em;
+        }
+    }
+    .legend-band {
+        padding: .5em 1em;
+        color: white;
+        background: rgba(255, 255, 255, 0.1);
+        margin: 1px 0 0;
+        .legend {
+        	text-align: left;
+            .key { 
+                font-size: .8em; 
+                padding-left: .7em;
+                display: inline-block;
+                margin-right: 1.5em;
+            }
+            .completed {
+                border-left: 20px solid @late;
+            }
+            .late {
+                border-left: 20px solid @late;
+            }
+            .promise {
+                border-left: 20px solid @hasEventColor;
+            }
+            .passed-day {
+                border-left: 20px solid @passedDay;
+            }
+            .glyphicon{
+            	top:2px;
+            }
+            .about-link{
+            	color:inherit;
+            	float:right;
+            }
+        }
+    }
+    .thick {
+        font-weight: normal;
+    }
+}
+// injector
+@import 'about/about.less';
+@import 'account/login/login.less';
+@import 'admin/admin.less';
+@import 'main/main.less';
+@import 'timeline/timeline.less';
+@import 'modal/modal.less';
+// endinjector
