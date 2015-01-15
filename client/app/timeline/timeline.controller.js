@@ -2,8 +2,40 @@
 
 angular.module('sourceApp')
     .controller('TimelineCtrl', function($scope, Promises, $timeout) {
+        function calcRemaining() {
+            setTimeout(function() {
+                var milis = initDayMilis + (milisPerDay * 104) - new Date().getTime();
+                var seconds = Math.floor(milis / 1000);
+                milis = milis % 1000;
+                var minutes = Math.floor(seconds / 60);
+                seconds = seconds % 60;
+                var hours = Math.floor(minutes / 60);
+                minutes = minutes % 60;
+                var days = Math.floor(hours / 24);
+                hours = hours % 24;
+                $scope.$apply(function() {
+                    $scope.stats.remainingTime = days + ' d ' + hours + ' h ' + minutes + ' m ' + seconds + ' s';
+                });
+                calcRemaining();
+            }, 1000);
+        }
+
+        function isDayPassed(i) {
+            return initDayMilis + (i * milisPerDay) < todayStartMilis;
+        }
+
+        function preparePromises() {
+            _.forEach(Promises, function(item) {
+                var splits = item.dateStr.split('/');
+                item.date = new Date(2015, parseInt(splits[0]) - 1, parseInt(splits[1]));
+                var dateMilis = item.date.getTime();
+                item.day = (dateMilis - initDayMilis) / milisPerDay;
+            });
+        }
+
+        var _state = $scope.state = {};
         var today = new Date();
-        var todayMilis = today.getTime();
+        //var todayMilis = today.getTime();
         var todayStartMilis = new Date(today.getFullYear(), today.getMonth(), today.getDate());
         var initDay = new Date(2015, 0, 10);
         var initDayMilis = initDay.getTime();
@@ -29,38 +61,29 @@ angular.module('sourceApp')
             }).true || 0,
         };
         calcRemaining();
-
-        function calcRemaining() {
-            setTimeout(function() {
-                var milis = initDayMilis + (milisPerDay * 104) - new Date().getTime();
-                var seconds = Math.floor(milis / 1000);
-                milis = milis % 1000;
-                var minutes = Math.floor(seconds / 60);
-                seconds = seconds % 60;
-                var hours = Math.floor(minutes / 60);
-                minutes = minutes % 60;
-                var days = Math.floor(hours / 24);
-                hours = hours % 24;
-                $scope.$apply(function() {
-                	$scope.stats.remainingTime = days + ' d ' + hours + ' h ' + minutes + ' m ' + seconds + ' s';
-                });
-                console.log($scope.stats.remainingTime);
-                calcRemaining();
-            }, 1000);
-        }
-
-        function isDayPassed(i) {
-            return initDayMilis + ((i + 1) * milisPerDay) < todayStartMilis;
+        _state.selectedDay = $scope.days[i];
+        $scope.setSelectedDay = function(day) {
+            if (!_state.selectedDay || _state.selectedDay !== day) {
+                var selectedDay = _state.selectedDay;
+                if (selectedDay) {
+                    selectedDay.quickHide = true;
+                    $timeout(function() {
+                        selectedDay.quickHide = false;
+                    }, 1000);
+                }
+                _state.selectedDay = day;
+            } else {
+                _state.selectedDay = null;
+            }
         };
-
-        function preparePromises() {
-            _.forEach(Promises, function(item) {
-                var splits = item.dateStr.split('/');
-                item.date = new Date(2015, parseInt(splits[0]) - 1, parseInt(splits[1]));
-                var dateMilis = item.date.getTime();
-                item.day = (dateMilis - initDayMilis) / milisPerDay;
-            });
-        }
+        $scope.isSlectedDay = function(day) {
+            return _state.selectedDay === day;
+        };
+        $scope.loadSocailButtons = function  (day,e) {
+        	if(!day.socialButtonsLoaded){ 
+        		Socialite.load($(e.target));
+        	}	
+        };
         var months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'Agust', 'September', 'October', 'November', 'December'];
 
         $scope.getDateName = function(date) {

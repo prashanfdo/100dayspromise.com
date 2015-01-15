@@ -8,7 +8,7 @@
     padding-bottom: 2em;
     .share-buttons {
         width: 60%;
-        height: 40px;
+        height: 38px;
         text-align: right;
         padding-top: 14px;
         padding-right: 0;
@@ -19,7 +19,7 @@
         background: #f7f7f7;
         padding: 0;
         width: 10%;
-        height: 40px;
+        height: 38px;
         border-right: solid 1px #f1f1f1;
         border-bottom: solid 1px #f1f1f1;
         &:nth-child(10n) {
@@ -43,11 +43,20 @@
                 visibility: hidden;
             }
         }
-        .early-completed {
+        .inner-text {
+            display: inline-block;
+            color: #3C3C3C;
             width: 100%;
-            font-size: 1.4em;
             line-height: 1em;
-            margin-top: -0.5em;
+            position: relative;
+            top: -.3em;
+            &.glyphicon {
+                font-size: 1.2em;
+                top: 0;
+            }
+            &.late {
+                color: white;
+            }
         }
         .tooltip-inner {
             border-radius: 0;
@@ -79,16 +88,27 @@
             position: absolute;
             z-index: 10000;
             display: none;
+            &.pinned {
+                display: block;
+            }
+            &.quick-hide {
+                display: none !important;
+            }
             background: inherit;
             width: 300px;
             min-height: 150px;
             .date-str {
                 margin: 0;
-                margin-left: -1.5em;
+                font-size: 1.8em;
                 background: transparent;
                 border: none;
                 color: inherit;
                 padding-top: 0;
+            }
+            .peek-close {
+                font-size: 1.2em;
+                padding-top: .4em;
+                cursor: pointer;
             }
         }
         &.has-event {
@@ -117,18 +137,19 @@
             }
             &.has-event {
                 &.late {
+                    .day-no, .peek {
+                        color: white;
+                    }
                     background: @late;
                     &:hover {
                         border-right-color: @late;
                     }
                 }
             }
-            .day-no, .peek {
-                color: white;
-            }
         }
     }
     .day-inner {
+        cursor: pointer;
         height: 100%;
         width: 100%;
         position: absolute;

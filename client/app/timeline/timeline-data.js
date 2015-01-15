@@ -9,7 +9,7 @@ angular.module('sourceApp')
     }, {
         dateStr: '1/11',
         promiseText: 'A Cabinet of not more than 25 members, including members of all political parties represented in Parliament, will be appointed with Leader of the Opposition Ranil Wickremesinghe as Prime Minister.',
-        done: false,
+        done: true,
         earlyCompleted: false
     }, {
         dateStr: '1/12',
