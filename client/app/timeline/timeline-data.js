@@ -14,7 +14,7 @@ angular.module('sourceApp')
     }, {
         dateStr: '1/12',
         promiseText: 'In order to strengthen democracy, a National Advisory Council will be set up inclusive of representatives of parties represented in Parliament as well as Civil Society organizations.',
-        done: false,
+        done: true,
         earlyCompleted: false
     }, {
         dateStr: '1/20',

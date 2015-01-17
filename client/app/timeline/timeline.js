@@ -4,7 +4,7 @@ angular.module('sourceApp')
     .config(function($stateProvider) {
         $stateProvider
             .state('timeline', {
-                url: '/',
+                url: '/:day',
                 templateUrl: 'app/timeline/timeline.html',
                 controller: 'TimelineCtrl'
             });

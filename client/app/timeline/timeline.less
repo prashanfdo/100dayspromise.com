@@ -1,12 +1,12 @@
 @hasEventColor: #CEF09D;
 @late: #FD7400;
-@passedDay: #1F8A70;
+@passedDay: #D5E2DF;
 @done: #B1E001;
 .timeline {
     text-align: center;
     padding-top: 2em;
     padding-bottom: 2em;
-    .share-buttons {
+    .site-share-buttons {
         width: 60%;
         height: 38px;
         text-align: right;
@@ -95,7 +95,7 @@
                 display: none !important;
             }
             background: inherit;
-            width: 300px;
+            width: 330px;
             min-height: 150px;
             .date-str {
                 margin: 0;
@@ -109,6 +109,18 @@
                 font-size: 1.2em;
                 padding-top: .4em;
                 cursor: pointer;
+            }
+            .share-buttons > * {
+                display: inline-block;
+                float: left;
+            }
+            .share-buttons .fb-share-button {
+                width: 100px;
+            }
+            .share-buttons-text {
+                border-top: dashed 1px;
+                margin-top: 1.3em;
+                padding-top: .8em;
             }
         }
         &.has-event {

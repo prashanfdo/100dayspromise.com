@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('sourceApp')
-    .controller('TimelineCtrl', function($scope, Promises, $timeout) {
+    .controller('TimelineCtrl', function($scope, Promises, $timeout, $stateParams, $state, $window) {
         function calcRemaining() {
             setTimeout(function() {
                 var milis = initDayMilis + (milisPerDay * 104) - new Date().getTime();
@@ -24,6 +24,10 @@ angular.module('sourceApp')
             return initDayMilis + (i * milisPerDay) < todayStartMilis;
         }
 
+        function daysPassedCount(dayMilis,i) {
+            return Math.floor((todayStartMilis - dayMilis) / milisPerDay);
+        }
+
         function preparePromises() {
             _.forEach(Promises, function(item) {
                 var splits = item.dateStr.split('/');
@@ -33,22 +37,38 @@ angular.module('sourceApp')
             });
         }
 
+        function loadSocialButtons(day, element) {
+            if (day.event && !day.socialButtonsLoaded) {
+                $window.twttr.widgets.load(element);
+                $window.FB.XFBML.parse(element);
+                //$window.gapi.plusone.go(element);
+                day.socialButtonsLoaded = true;
+            }
+        }
+
         var _state = $scope.state = {};
-        var today = new Date();
+        var today = new Date();//2015, 0, 12);
         //var todayMilis = today.getTime();
-        var todayStartMilis = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+        var todayStartMilis = new Date(today.getFullYear(), today.getMonth(), today.getDate()).getTime();
         var initDay = new Date(2015, 0, 10);
         var initDayMilis = initDay.getTime();
         var milisPerDay = 24 * 60 * 60 * 1000;
         preparePromises();
         $scope.days = [];
         for (var i = 0; i < 104; i++) {
+            var date = new Date(initDayMilis + milisPerDay * i);
+            var dayPassed = isDayPassed(i);
+            var daysPassedCountVal = isDayPassed && daysPassedCount(date.getTime(),i) || 0;
+            var isToday = date.getTime() === todayStartMilis; 
             $scope.days.push({
                 event: _.find(Promises, {
                     day: i
                 }),
-                dayPassed: isDayPassed(i),
-                date: new Date(initDayMilis + milisPerDay * i)
+                dayNo: i + 1,
+                dayPassed: dayPassed,
+                daysPassedCount: daysPassedCountVal,
+                isToday:isToday,
+                date: date
             });
         }
         $scope.stats = {
@@ -61,7 +81,33 @@ angular.module('sourceApp')
             }).true || 0,
         };
         calcRemaining();
-        _state.selectedDay = $scope.days[i];
+        var urlDay = $stateParams.day.match(/[0-9]{1,3}/);
+        if (urlDay) {
+            urlDay = parseInt(urlDay[0]);
+            _state.selectedDay = $scope.days[urlDay - 1];
+            $timeout(function() {
+                loadSocialButtons(_state.selectedDay, $('.day[data-day-no="' + _state.selectedDay.dayNo + '"]')[0]);
+            }, 400);
+        }
+        $timeout(function() {
+            var el = $('.site-share-buttons')[0];
+            $window.twttr.widgets.load(el);
+            //$window.gapi.plusone.go(el);
+        }, 1500);
+        $timeout(function() {
+            _.forEach($('.day.late'), function(ele) {
+                var dayNo = parseInt($(ele).attr('data-day-no'));
+                var day = $scope.days[dayNo - 1];
+                loadSocialButtons(day, ele);
+            });
+        }, 3200);
+        $timeout(function() {
+            _.forEach($('.day.done'), function(ele) {
+                var dayNo = parseInt($(ele).attr('data-day-no'));
+                var day = $scope.days[dayNo - 1];
+                loadSocialButtons(day, ele);
+            });
+        }, 5000);
         $scope.setSelectedDay = function(day) {
             if (!_state.selectedDay || _state.selectedDay !== day) {
                 var selectedDay = _state.selectedDay;
@@ -72,22 +118,61 @@ angular.module('sourceApp')
                     }, 1000);
                 }
                 _state.selectedDay = day;
+                loadSocialButtons(_state.selectedDay, $('.day[data-day-no="' + _state.selectedDay.dayNo + '"]')[0]);
             } else {
                 _state.selectedDay = null;
             }
+            $state.transitionTo('timeline', {
+                day:_state.selectedDay ? 'day-' + (day.dayNo + 1) : ''
+            }, {
+                location: true,
+                inherit: true,
+                relative: $state.$current,
+                notify: false
+            });
         };
         $scope.isSlectedDay = function(day) {
             return _state.selectedDay === day;
         };
-        $scope.loadSocailButtons = function  (day,e) {
-        	if(!day.socialButtonsLoaded){ 
-        		Socialite.load($(e.target));
-        	}	
+        $scope.loadSocialButtons = function(day, e) {
+            if (day.event && !day.socialButtonsLoaded && !day.socialButtonsTO) {
+            	day.socialButtonsTO = $timeout(function  () {
+            		loadSocialButtons(day, e.delegateTarget);
+            	},350); 
+            }
         };
-        var months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'Agust', 'September', 'October', 'November', 'December'];
+        $scope.stopLoadSocialButtons = function(day) {
+            $timeout.cancel(day.socialButtonsTO);
+            day.socialButtonsTO = undefined;
+        };
+        var months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'Agust', 'September', 'October', 'November', 'December','Jan', 'Feb', 'Mar', 'Apr',];
 
         $scope.getDateName = function(date) {
             var monthDate = date.getDate();
             return months[date.getMonth()] + ' ' + (monthDate > 9 && monthDate || '0' + monthDate);
+        };
+        $scope.getShortDateName = function(date) {
+            var monthDate = date.getDate();
+            return months[date.getMonth()+12] + ' ' + (monthDate > 9 && monthDate || '0' + monthDate);
+        };
+        $scope.getActionTextOfDay = function(day) {
+            if (day.event) {
+                if (day.dayPassed) {
+                    return !!day.event.done ? 'Show your gratitude. Congratulate the President.' : 'Raise your voice. Remind the President.';
+                } else {
+                    return 'Show your anticipation for the change.';
+                }
+            }
+            return '';
+        };
+        $scope.getTweetTextOfDay = function(day) {
+            if (day.event) {
+                if (day.dayPassed) {
+                    return !!day.event.done ? '@SLPresMaithri Thank you for fulfilling the Promise' : '@SLPresMaithri the Promise you made late ' + day.daysPassedCount + 'day' + (day.daysPassedCount > 1 ? 's':'');
+                } else {
+                    return '@SLPresMaithri I hope this promise will be fulfilled soon.';
+                }
+            }
+            return '';
         };
     });

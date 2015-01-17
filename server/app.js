@@ -25,6 +25,7 @@ var socketio = require('socket.io')(server, {
   path: '/socket.io-client'
 });
 require('./config/socketio')(socketio);
+require('./components/web-crawl-server')(app);
 require('./config/express')(app);
 require('./routes')(app);
 

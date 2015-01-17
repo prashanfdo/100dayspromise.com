@@ -84,12 +84,17 @@ body {
     }
 }
 @keyframes glow {
-  to {
+    to {
         text-shadow: 0 0 10px red;
+        box-shadow: 0 0 10px 10px #000;
     }
 }
-.late-promise-count{
-	animation:glow 10s ease-in-out infinite alternate;
+.late-promise-count {
+	color:@done;
+	&.more{
+		color:@late;
+	}
+    // animation: glow 10s ease-in-out infinite alternate;
 }
 // injector
 @import 'about/about.less';
